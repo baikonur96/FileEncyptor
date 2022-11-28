@@ -29,5 +29,12 @@ public class Main {
         zipFile.addFolder(new File(path + "folder"), parameters);
      //   zipFile.addFile(new File(path + "IMG_3636.JPG"), parameters);
 
+        ZipFile zipFile1 = new ZipFile(ProgramSettings.outputFolder + ProgramSettigs.outputFilename);
+        if (zipFile1.isEncrypted()){
+            zipFile1.setPassword(ProgramSettings.getEncryptionPassword());
+        }
+        zipFile1.extractAll(ProgramSettings.outputDolder + ProgramSettings.decryptOutput);
+
     }
 }
+
