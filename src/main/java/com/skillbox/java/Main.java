@@ -5,12 +5,27 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 
+import javax.swing.*;
 import java.io.File;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception  {
 
-        String path = "/Users/Diagnost/Desktop/";
+        JFrame frame = new JFrame("File Encrypter");
+        frame.setSize(600,400);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        GUIForme forme = new GUIForme();
+        frame.add(forme.getRootPanel());
+        frame.setVisible(true);
+
+        //ZipFile zipFile = new ZipFile("");
+        //zipFile.isValidZipFile();
+
+    }
+}
+
+/*        String path = "/Users/Diagnost/Desktop/";
         ZipParameters parameters = new ZipParameters();
         parameters
                 .setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
@@ -33,8 +48,7 @@ public class Main {
         if (zipFile1.isEncrypted()){
             zipFile1.setPassword(ProgramSettings.getEncryptionPassword());
         }
-        zipFile1.extractAll(ProgramSettings.outputDolder + ProgramSettings.decryptOutput);
+        zipFile1.extractAll(ProgramSettings.outputDolder + ProgramSettings.decryptOutput);*/
 
-    }
-}
+
 
