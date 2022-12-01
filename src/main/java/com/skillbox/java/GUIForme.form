@@ -16,12 +16,12 @@
       <vspacer id="dcc73">
         <constraints border-constraint="East"/>
       </vspacer>
-      <grid id="f1fa1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <grid id="f1fa1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="937bd" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="937bd" class="javax.swing.JTextField" binding="filePath">
             <constraints/>
             <properties>
               <editable value="false"/>
@@ -29,10 +29,16 @@
               <text value=""/>
             </properties>
           </component>
-          <component id="162aa" class="javax.swing.JButton" binding="выберитеФайлИлиПапкуButton" default-binding="true">
+          <component id="162aa" class="javax.swing.JButton" binding="selectButton">
             <constraints/>
             <properties>
               <text value="Выберите файл или папку"/>
+            </properties>
+          </component>
+          <component id="adb53" class="javax.swing.JButton" binding="actionButton">
+            <constraints/>
+            <properties>
+              <text value="Button"/>
             </properties>
           </component>
         </children>
