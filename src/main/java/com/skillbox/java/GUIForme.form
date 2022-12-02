@@ -38,7 +38,8 @@
           <component id="adb53" class="javax.swing.JButton" binding="actionButton">
             <constraints/>
             <properties>
-              <text value="Button"/>
+              <enabled value="true"/>
+              <text value=""/>
             </properties>
           </component>
         </children>
