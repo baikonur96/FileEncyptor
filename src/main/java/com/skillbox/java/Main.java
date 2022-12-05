@@ -16,7 +16,7 @@ public class Main {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         GUIForme form = new GUIForme();
-        frame.add(form.getRootPanel());
+        frame.add(form.getPanel1());
         frame.setVisible(true);
 
         //ZipFile zipFile = new ZipFile("");

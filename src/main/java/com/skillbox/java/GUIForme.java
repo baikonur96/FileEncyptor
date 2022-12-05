@@ -5,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.util.Zip4jConstants;
 
 public class GUIForme {
     private JPanel panel1;
@@ -19,23 +17,7 @@ public class GUIForme {
     private boolean encryptedFileSelected = false;
     private String decryptAction = "Расшифровать";
     private String encryptAction = "Зашифровать";
-    private ZipParameters parameters;
     public GUIForme(){
-
-        parameters = new ZipParameters();
-
-        parameters
-                .setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-        parameters
-                .setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
-        parameters
-                .setEncryptFiles(true);
-        parameters
-                .setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
-        parameters
-                .setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
-       // parameters
-       //         .setPassword("123");
         selectButton.addActionListener(new Action(){
             public Object getValue(String key) {
                 return null;
@@ -46,23 +28,7 @@ public class GUIForme {
                 chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 chooser.showOpenDialog(panel1);
                 selectedFile = chooser.getSelectedFile();
-                if (selectedFile == null) {
-                    filePath.setText("");
-                    actionButton.setVisible(false);
-                    return;
-                }
-                filePath.setText(selectedFile.getAbsolutePath());
-                try {
-                    ZipFile zipFile = new ZipFile(selectedFile);
-                    encryptedFileSelected = zipFile.isValidZipFile() && zipFile.isEncrypted();
-                        actionButton.setText( encryptedFileSelected ?
-                                decryptAction : encryptAction);
-
-                }catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                actionButton.setVisible(true);
-
+                onFileSelect();
             }
 
 
@@ -127,73 +93,79 @@ public class GUIForme {
                 if (selectedFile == null){
                     return;
                 }
-                setButtonEnable(false);
                 String password = JOptionPane.showInputDialog("Введите пароль:");
-                if (encryptedFileSelected){
-                    decryptFile(password);
-                }else {
-                    encryptFile(password);
+                if (password == null || password.length() == 0){
+                    showWarning("Пароль не указан");
+                    return;
                 }
-                setButtonEnable(true);
+                try {
+                    if (encryptedFileSelected) {
+                        decryptFile(password);
+                    } else {
+                        encryptFile(password);
+                    }
+                }catch (Exception u){
+                    u.getMessage();
+                }
 
             }
         });
     }
-    public JPanel getRootPanel() {
+    public JPanel getPanel1() {
         return panel1;
     }
 
-    private void setButtonEnable(boolean enabled) {
+    public void setButtonEnable(boolean enabled) {
         selectButton.setEnabled(enabled);
         actionButton.setEnabled(enabled);
 
     }
-    private void encryptFile(String password) {
-        String archiveName = getArchiveName();
-        parameters.setPassword(password);
-        try {
-            ZipFile zipFile = new ZipFile(archiveName);
 
-           if (selectedFile.isDirectory()){
-               zipFile.addFolder(selectedFile, parameters);
-           }
-        } catch (Exception ex) {
+    private void onFileSelect(){
+        if (selectedFile == null) {
+            filePath.setText("");
+            actionButton.setVisible(false);
+            return;
+        }
+        filePath.setText(selectedFile.getAbsolutePath());
+        try {
+
+            ZipFile zipFile = new ZipFile(selectedFile);
+            encryptedFileSelected = zipFile.isValidZipFile() && zipFile.isEncrypted();
+            actionButton.setText( encryptedFileSelected ?
+                    decryptAction : encryptAction);
+        }catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
+        actionButton.setVisible(true);
+    }
+    private void encryptFile(String password) throws Exception {
+        EncrypterThread thread = new EncrypterThread(this);
+        thread.setFile(selectedFile);
+        thread.setPassword(password);
+        thread.start();
     }
 
     private void decryptFile(String password) {
-        String outPath = getOutputPath();
-        try {
-            ZipFile zipFile = new ZipFile(selectedFile);
-            zipFile.setPassword(password);
-            zipFile.extractAll(outPath);
-        } catch (ZipException e) {
-           e.printStackTrace();
-        }
+        DecrypterThread thread = new DecrypterThread(this);
+        thread.setFile(selectedFile);
+        thread.setPassword(password);
+        thread.start();
+    }
+    void showWarning(String message){
+        JOptionPane.showMessageDialog(panel1, message, "Ошибка", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void showFinished() {
+        JOptionPane.showMessageDialog(
+                panel1,
+                encryptedFileSelected ?
+                        "Расшифровка завершена" :
+                        "Шифрование завершено",
+                "Ошибка",
+                JOptionPane.WARNING_MESSAGE);
 
     }
 
-    private String getArchiveName() {
-        for (int i = 1; ; i++){
-            String number  = i > 0 ? Integer.toString(i) : "";
-            String archiveName = selectedFile.getAbsolutePath() + number + ".zip";
-            if (!new File(archiveName).exists()) {
-                return archiveName;
-            }
-        }
-    }
-    private String getOutputPath() {
-        String path = selectedFile.getAbsolutePath().replaceAll("\\.zip$", "");
-        for (int i = 1; ; i++) {
-            String number = i > 1 ? Integer.toString(i) : "";
-            if (new File(path + number).exists()) {
-                return path;
-            }
-        }
-
-    }
 
 }

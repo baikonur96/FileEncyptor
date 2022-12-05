@@ -39,7 +39,7 @@
             <constraints/>
             <properties>
               <enabled value="true"/>
-              <text value=""/>
+              <text value="&quot;&quot;"/>
             </properties>
           </component>
         </children>
